@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #ffdfba, #ffc2c2);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .container {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  header {
+    background: #ff6f61;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 24px;
+  }
+  
+  header p {
+    font-size: 14px;
+  }
+  
+  main {
+    padding: 20px;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column
+  }
+  
+  fieldset {
+    border: 2px solid #ff6f61;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  legend {
+    padding: 0 10px;
+    font-weight: bold;
+    font-size: 16px;
+    color: #ff6f61;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block
+  }
+  
+  input {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: #ff6f61;
+    box-shadow: 0 0 5px rgba(255, 111, 97, 0.5);
+  }
+  
+  button {
+    background: #ff6f61;
+    color: #fff;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background: #e65a50;
+  }
+  
+  footer {
+    text-align: center;
+    padding: 10px;
+    background: #f1f1f1;
+    font-size: 12px;
+    color: #333;
+  }
+ </style>
+  <title>Manajemen Hotel</title>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>📚 Manajeman Hotel</h1> 
+      <p>Masukkan informasi hotel untuk bergabung ke database Manajemen Hotel.</p>
+    </header>
+    <main>
+      <fieldset>
+        <legend>Informasi Hotel</legend>
+        <form action="/submit.php" method="POST">
+          <div class="form-group">
+            <label for="Hotel">Nama Hotel</label>
+            <input type="text" id="namahotel" name="namahotel" placeholder="Masukkan Nama Hotel" aria-label="Nama Hotel" required> 
+          </div>
+          <div class="form-group">
+            <label for="Lokasi">Lokasi</label>
+            <input type="text" id="lokasi" name="lokasi" placeholder="Masukkan Lokasi Hotel" aria-label=" Lokasi Hotel" required>
+          </div>
+          <div class="form-group">
+            <label for="Bintang">Bintang</label>
+            <input type="number" id="bintang" name="bintang" placeholder="Masukkan Bintang Hotel" aria-label="Bintang Hotel" max="5" min="1" step="1" required>
+          </div>
+          <div class="form-group">
+            <label for="Harga">Harga</label>
+            <input type="number" id="harga" name="harga" placeholder="Masukkan Harga Hotel" aria-label="Harga Hotel" min="0" step="any" required>
+          </div>
+          <button type="submit" aria-label="Kirim data hotel">Kirim</button>
+        </form>
+      </fieldset>
+    </main>
+    <footer>
+      <p>© 2024 Manajemen Hotel. Hak Cipta Dilindungi Undang-Undang.</p>
+    </footer>
+  </div>
+</body>
+</html>
