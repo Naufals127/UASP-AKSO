@@ -1,0 +1,153 @@
+version: "3.8"
+
+name: fina-naufal
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8030:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - app-network
+    environment:
+      - NODE_ENV=production
+      - API_URL=http://localhost:8032
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256M"
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8032:80"
+    volumes:
+      - ./backend:/var/www/html
+      - ./backend/config/php.ini:/usr/local/etc/php/conf.d/php.ini
+    networks:
+      - app-network
+    depends_on:
+      - mysql
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+      - APP_KEY=base64:randomkeyexample==
+      - DB_HOST=mysql
+      - DB_PORT=3306
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "512M"
+      restart_policy:
+        condition: any
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: finaufal
+      MYSQL_DATABASE: manajemenhotel
+      MYSQL_USER: finaufal
+      MYSQL_PASSWORD: finaufal
+    ports:
+      - "3309:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    configs:
+      - source: my-custom-config
+        target: /etc/mysql/conf.d/custom.cnf
+    networks:
+      - app-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: "1G"
+      restart_policy:
+        condition: on-failure
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8031:80"
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: finaufal
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: "256M"
+      restart_policy:
+        condition: any
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  mysql_data:
+    driver: local
+
+configs:
+  my-custom-config:
+    file: ./mysql/custom.cnf
+
+networks:
+  app-network:
+    driver: bridge
